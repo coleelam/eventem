@@ -8,7 +8,7 @@ const client = new pg.Client(connectionString);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Big Fun Canvas' });
+  res.render('index', { title: 'Eventem' });
 });
 
 router.post('/api/users', (req, res, next) => {
