@@ -1,4 +1,4 @@
-# Big Fun Canvas
+# Eventem
 
 ---
 
@@ -7,14 +7,11 @@
 | Name | Email |
 | :---: | :---- |
 | Cole Elam | elamc@purdue.edu |
-| Jordan Mayer | mayer15@purdue.edu |
-| David Sun | sun594@purdue.edu |
 
 # Description
 
-Big Fun Canvas (BFC) is a massive digital canvas that anyone can draw on. To avoid having any one person take over the entire drawing, the canvas is divided into smaller squares called "patches", and users are limited to drawing in one patch per day. To use BFC, simply visit the website, create an account with your own username and password, and enter the coordinates of the patch you want to draw in (or, if you can't decide, BFC can choose for you).
-
-Once you choose a patch, you can draw whatever you want using BFC's wide array of colors, brushes, and shapes. Create your own standalone patch or draw something that responds to or integrates with a neighboring patch. If you want, you can join a Guild of other users who work together to create larger works of art - and perhaps fight for dominance over a certain segment of the canvas.
+Eventem is an app that is designed to bring all event registration to a single app and allow people to chat that are wanting to go to
+any event! The app will have events that you can sign up for as a user and also have a chat for each specific event.
 
 
 # Dependencies
@@ -22,6 +19,7 @@ Once you choose a patch, you can draw whatever you want using BFC's wide array o
 * Node.js - Server-side javascript
 * Express.js - Web application framework
 * EJS - Embedded JavaScript in HTML
+* Angular JS - HTTP Requests
 * Heroku - Cloud platform for web application deployment
 * Socket.IO - Real-time engine for bidirectional events
 
@@ -46,7 +44,7 @@ npm install
 
 * After updating any files, check locally using
 ```bash
-node server.js
+node ./bin/www
 ```
 
 * To push to live server, do
