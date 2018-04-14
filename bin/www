@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var appfile = require('../app');
+var app = appfile.app;
 var debug = require('debug')('cs252lab6:server');
 // var http = require('http');
 

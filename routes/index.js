@@ -5,6 +5,13 @@ const QueryStream = require('pg-query-stream');
 const JSONStream = require('JSONStream');
 const path = require('path');
 const moment = require('moment');
+const dataform = require('../models/database');
+const User = dataform.User;
+const Group = dataform.Group;
+const _Event = dataform._Event;
+const appfile = require('../app');
+const app = appfile.app;
+const sessionChecker = appfile.sessionChecker;
 const connectionString = (process.argv[2] === 'local') ? 'postgres://localhost:5432/coleelam' : process.env.DATABASE_URL;
 
 const pool = new Pool({
@@ -13,84 +20,62 @@ const pool = new Pool({
 });
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Eventem' });
+  res.render('login', { title: 'Eventem' });
 });
 
-/* POST NEW USER ROUTE */
-router.post('/api/users', (req, res, next) => {
-  // Grab data from http request
+router.get('/signup', function (req, res) {
+  res.render('signup', { title: 'Eventem' });
+});
+
+router.post('/signup', function (req, res) {
   const data = { username: req.body.username, email: req.body.email, pass_hash: req.body.pass_hash };
-  // Get a Postgres client from the connection pool
+  User.create({
+    username: data.username,
+    email: data.email,
+    pass_hash: data.pass_hash,
+  }).then(user => {
+    req.session.user = user.dataValues;
+    res.redirect('/dashboard');
+  }).catch(err => {
+    console.log(err);
+    res.redirect('/signup');
+  });
+});
+
+router.get('/login', function (req, res) {
+  res.render('login', { title: 'Eventem' });
+});
+
+router.post('/login', function (req, res) {
+  const data = { username: req.body.username, pass_hash: req.body.pass_hash };
   console.log(data);
-  // console.log(connectionString);
-  pool.query('INSERT INTO users (username, email, pass_hash) values($1, $2, $3)',
-    [data.username, data.email, data.pass_hash], (err, res) => {
-    if (err) {
-      console.log('Cannot add user because: ' + err);
+  User.findOne({where: {username : data.username}}).then(function (user) {
+    if (!user) {
+      res.redirect('/login');
+    } else if (!user.validPassword(data.pass_hash)) {
+      res.redirect('/login');
+    } else {
+      req.session.user = user.dataValues;
+      res.redirect('/dashboard');
     }
   });
-  res.render('index', { title: 'Eventem' });
 });
 
-/* GET LIST OF USERS */
-router.get('/api/users', (req, res, next) => {
-  pool.query('SELECT user_id, username, email FROM users ORDER BY user_id ASC', (err, res) => {
-    if (err) {
-      console.log('Cannot SELECT because: ' + err);
-    }
-    console.log(res.rows);
-    return res.rows;
-  });
-  res.render('index', { title: 'Eventem' });
+router.get('/dashboard', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    res.render('dashboard', { title: 'Eventem' });
+  } else {
+    res.redirect('/login');
+  }
 });
 
-/* POST NEW EVENT */
-router.post('/api/events', (req, res, next) => {
-  const data = { event_name: req.body.event_name, creator: req.body.creator, event_time: moment().add(3, 'days').format() }
-  console.log(data);
-  pool.query('INSERT INTO events (event_name, creator, event_time) values($1, $2, $3)',
-    [data.event_name, data.creator, data.event_time], (err, res) => {
-    if (err) {
-      console.log('Cannot add event because: ' + err);
+router.get('/logout', function (req, res) {
+    if (req.session.user && req.cookies.user_sid) {
+        res.clearCookie('user_sid');
+        res.redirect('/');
+    } else {
+        res.redirect('/login');
     }
-  });
-  res.render('index', { title: 'Eventem' });
-});
-
-/* GET LIST OF EVENTS */
-router.get('/api/events', (req, res, next) => {
-  pool.query('SELECT * FROM events ORDER BY event_time ASC', (err, res) => {
-    if (err) {
-      console.log('Cannot SELECT events because: ' + err);
-    }
-    console.log(res.rows);
-    return res.rows;
-  });
-  res.render('index', { title: 'Eventem' });
-});
-
-/* POST NEW GROUP */
-router.post('/api/groups', (req, res, next) => {
-  const data = { group_name: req.body.group_name, created_by: req.body.created_by };
-  console.log(data);
-  pool.query('INSERT INTO groups (group_name, created_by) values($1, $2)',
-    [data.group_name, data.created_by], (err, res) => {
-    if (err) {
-      console.log('Cannot create group because: ' + err);
-    }
-  });
-  res.render('index', { title: 'Eventem' });
-});
-
-/* GET GROUPS */
-router.get('/api/groups', (req, res, next) => {
-  pool.query('SELECT * FROM groups ORDER BY group_name ASC', (err, res) => {
-    if (err) {
-      console.log('Cannot SELECT groups because: ' + err);
-    }
-    console.log(res.rows);
-  });
-  res.render('index', { title: 'Eventem' });
 });
 
 module.exports = router;

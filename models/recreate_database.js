@@ -26,13 +26,13 @@ var User = sequelize.define('users', {
     type: Sequelize.STRING,
     unique: true,
     allowNull: false,
+    validate : {
+      isEmail: true,
+    }
   },
   email: {
     type: Sequelize.STRING,
     allowNull: false,
-    validate : {
-      isEmail: true,
-    }
   },
   pass_hash: {
     type: Sequelize.STRING,
@@ -147,10 +147,25 @@ var _Event = sequelize.define('events', {
   timestamps: false,
 });
 
-// sequelize.sync()
-//   .then(() => console.log('created tables if they didn\'t exist'))
-//   .catch(err => console.log('there was an error: ' + err));
-//
+User.sync({force: true})
+  .then(() => {
+    console.log('\'users\' table successfully recreated.');
+    Group.sync({force: true})
+      .then(() => {
+        console.log('\'groups\' table successfully recreated.');
+        _Event.sync({force: true})
+          .then(() => {
+            console.log('\'events\' table successfully recreated.');
+            sequelize.close()
+              .then(() => {console.log('ending session')})
+              .catch(err => {console.log('could not end session: ' + err)});
+          })
+          .catch(err => console.log('cannot recreate table events ' + err));
+      })
+      .catch(err => console.log('cannot recreate table groups ' + err));
+  })
+  .catch(error => console.log('cannot recreate tables users ' + error));
+
 module.exports = {
   User,
   Group,
