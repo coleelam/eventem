@@ -37,13 +37,6 @@ app.use((req, res, next) => {
     next();
 });
 
-var sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies.user_sid) {
-        res.redirect('/dashboard');
-    } else {
-        next();
-    }
-};
 
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
@@ -66,5 +59,4 @@ app.use(function(err, req, res, next) {
 
 module.exports = {
   app,
-  sessionChecker,
 };
