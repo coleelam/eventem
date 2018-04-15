@@ -132,6 +132,11 @@ var _Event = sequelize.define('events', {
     type: Sequelize.DATE,
     allowNull: false,
   },
+  description: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    defaultValue: null,
+  },
   attendees: {
     type: Sequelize.ARRAY(Sequelize.INTEGER),
     allowNull: true,
