@@ -1,14 +1,20 @@
 body    { padding-top:50px; }
-.container .jumbotron    { border-radius:40px; }
+.container .jumbotron    {
+  border-radius:40px;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+}
 input, textarea {
     padding: 9px;
     border: solid 1px #E5E5E5;
     outline: 0;
     font: normal 13px/100% Verdana, Tahoma, sans-serif;
     width: 100%;
-    background: #FFFFFF url('bg_form.png') left top repeat-x;
-    background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF));
-    background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px);
+    /* background: #FFFFFF url('bg_form.png') left top repeat-x; */
+    /* background: -webkit-gradient(linear, left top, left 25, from(#FFFFFF), color-stop(4%, #EEEEEE), to(#FFFFFF)); */
+    /* background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE 1px, #FFFFFF 25px); */
     box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
     -moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
     -webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px;
@@ -35,10 +41,25 @@ input:focus, textarea:focus {
 .submit input {
     width: auto;
     padding: 9px 15px;
-    background: #617798;
+    /* background: #617798; */
     border: 0;
     font-size: 14px;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+    }
+
+    body, html {
+        height: 100%;
+        scroll-behavior: smooth;
+        position: relative;
+    }
+
+    @media (max-width: 992px) {
+        .h-md-100 {
+            min-height: 100%;
+        }
+        .nav-link.active {
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
     }
