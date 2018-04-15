@@ -4,6 +4,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
         <link rel="stylesheet" href="/stylesheets/style.css">
         <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Raleway:600i" rel="stylesheet">
 
     </head>
 
@@ -14,7 +15,7 @@
                   <div class="collapse navbar-collapse" id="nav">
                       <ul class="flex-column flex-lg-row navbar-nav w-100 justify-content-center align-items-center align-items-sm-start text-left text-lg-center">
                           <li class="nav-item w-100">
-                              <a class="nav-link text-nowrap" href="/"><i class="fa fa-coffee fa-fw"></i> <span class="d-none d-sm-inline font-weight-bold">Eventem</span></a>
+                            <a class="nav-link text-nowrap" href="/"><i class="fa fa-coffee fa-fw"></i> <span class="d-none d-sm-inline font-weight-bold" style="font-family: 'Raleway', sans-serif;">Eventem</span></a>
                           </li>
                           <li class="nav-item w-100">
                               <a class="nav-link text-truncate" href="/signup"><i class="fa fa-user-plus fa-fw"></i> <span class="d-none d-sm-inline">Sign Up</span></a>
@@ -36,17 +37,31 @@
               <h1><strong><a href="/">Eventem</a></strong></h1>
           </div> -->
           <main class="container-fluid" id="main">
+            <br>
+            <div class="row">
+
+            </div>
             <div class="row">
                 <div class="col">
 
                 </div>
                 <div class="jumbotron col">
                     <form action="/login" method="post">
-                        <div>
-                            <!-- <label>Username:</label> -->
-                            <input type="text" name="username" placeholder="Username:"/>
+                        <div style="font-family: 'Raleway', sans-serif; text-align:center; font-size:200%">
+                          Eventem
                         </div>
                         <div>
+                            <!-- <label>Username:</label> -->
+                            <div>
+                              Username
+                            </div>
+                            <input type="text" name="username" placeholder="Username:"/>
+                        </div>
+                        <br>
+                        <div>
+                            <div>
+                              Password
+                            </div>
                             <!-- <label>Password:</label> -->
                             <input type="password" name="pass_hash" placeholder="Password:"/>
                         </div>
