@@ -1,44 +1,116 @@
 <html>
     <head>
         <title>Eventem Dashboard</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-        <link rel="stylesheet" href="/stylesheets/style.css">
-        <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+        <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>        <link rel="stylesheet" href="/stylesheets/style.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script> -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:600i" rel="stylesheet">
-        
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" href="/stylesheets/style.css">
+        <script type="text/javascript"
+     src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
+    </script>
+    <script type="text/javascript"
+     src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
+    </script>
+    <script type="text/javascript"
+     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+    </script>
+    <script type="text/javascript"
+     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+    </script>
+    <script type="text/javascript">
+      $('#datetimepicker').datetimepicker({
+        format: 'dd/MM/yyyy hh:mm:ss',
+        startDate: new Date(),
+        language: 'en'
+      });
+    </script>
     </head>
 
-    <div class="container-fluid h-100">
-      <div class="row d-flex flex-lg-column flex-row">
-        <aside class="col-2 col-lg-12 h-md-100 p-0 bg-dark fixed-top">
-            <nav class="navbar navbar-expand navbar-dark bg-dark py-2 px-0 px-lg-2">
-                <div class="collapse navbar-collapse" id="nav">
-                    <ul class="flex-column flex-lg-row navbar-nav w-100 justify-content-center align-items-center align-items-sm-start text-left text-lg-center">
-                        <li class="nav-item w-100">
-                          <a class="nav-link text-nowrap" href="/"><i class="fa fa-coffee fa-fw"></i> <span class="d-none d-sm-inline font-weight-bold" style="font-family: 'Raleway', sans-serif;">Eventem</span></a>
-                        </li>
-                        <li class="nav-item w-100">
-                            <a class="nav-link text-truncate" href="/signup"><i class="fa fa-user-plus fa-fw"></i> <span class="d-none d-sm-inline">Sign Up</span></a>
-                        </li>
-                        <li class="nav-item w-100">
-                            <a class="nav-link active text-truncate" href="/dashboard"><i class="far fa-newspaper fa-fw"></i> <span class="d-none d-sm-inline">Dashboard</span></a>
-                        </li>
-                        <li class="nav-item w-100">
-                            <a class="nav-link text-truncate" href="/login"><i class="fa fa-user-circle fa-fw"></i> <span class="d-none d-sm-inline">Log In</span></a>
-                        </li>
-                        <li class="nav-item w-100">
-                            <a class="nav-link text-truncate" href="/logout"><i class="fa fa-sign-out-alt fa-fw"></i> <span class="d-none d-sm-inline">Log Out</span></a>
-                        </li>
+
+
+
+
+<div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><i class="fa fa-coffee"></i> <span style="font-family: 'Raleway', sans-serif;">Eventem</span></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li> <a href="/dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class="fa fa-user-circle"></i> <%= username %> <span class="caret"></span></a>
+                    <ul id="g-account-menu" class="dropdown-menu" role="menu">
+                        <li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
-                </div>
-            </nav>
-        </aside>
-          <!-- <div class="page-header" style="margin-top:0em">
-              <h1><strong><a href="/" style="color:white">Eventem</a></strong></h1>
-          </div> -->
-          <main class="col offset-2 offset-lg-0 bg-faded py-2" id="main">
-            <h1>Hi, Welcome to your Dashboard</h1>
-          </main>
-      </div>
+                </li>
+            </ul>
+        </div>
     </div>
+    <!-- /container -->
+</div>
+
+<!-- /Header -->
+
+<!-- Main -->
+
+<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="text-align:center;">
+    <strong><span class="fa fa-dashboard"></span> My Events</strong>
+    <hr>
+    <div class="list-group" style="text-align:left;">
+      <% events.forEach(function(event) { %>
+        <a href="/dashboard" class="list-group-item"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
+      <% }) %>
+    </div>
+</div><!-- /span-3 -->
+<div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
+    <!-- Right -->
+
+    <div id="event_form" class="jumbotron">
+      <form action="/dashboard" method="post">
+        <div style="text-align:center; font-size:150%">
+          Create an Event!
+        </div>
+        <div>
+          <div>
+            Event Name
+          </div>
+          <input type="text" name="event_name" placeholder="Event Name:">
+        </div>
+        <div>
+          <div>
+            Description
+          </div>
+          <input type="text" name="description" placeholder="Description:">
+        </div>
+        <div>
+          <div>
+            Event Time
+          </div>
+          <div style="width:50%">
+            <input type="date" name="mdy"></input>
+          </div>
+          <div style="width:50%">
+            <input type="time" name="hm"></input>
+          </div>
+        </div>
+        <br>
+        <div>
+            <input class="btn btn-primary" type="submit" value="Submit"/>
+        </div>
+      </form>
+    </div>
+</div>
+
+
 </html>

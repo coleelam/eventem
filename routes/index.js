@@ -68,10 +68,40 @@ router.post('/login', function (req, res) {
 
 router.get('/dashboard', function (req, res) {
   if (req.session.user && req.cookies.user_sid) {
-    res.render('dashboard', { title: 'Eventem' });
+    const user = req.session.user;
+    _Event.findAll({where: {creator: req.session.user.user_id}}).then(events => {
+      // console.log(events);
+      res.render('dashboard', { events: events, username: user.username });
+    });
   } else {
     res.redirect('/login');
   }
+});
+
+router.post('/dashboard', function (req, res) {
+  const data = {
+    creator: req.session.user.user_id,
+    event_name: req.body.event_name,
+    description: req.body.description,
+    event_time: moment(req.body.mdy + ' ' + req.body.hm),
+    attendees: [req.session.user.user_id],
+    username: req.session.user.username,
+  }
+  const username = req.session.user.username;
+  _Event.create({
+    event_name: data.event_name,
+    creator: data.creator,
+    description: data.description,
+    event_time: data.event_time,
+    attendees: data.attendees,
+  }).then(value => {
+    _Event.findAll({where: {creator: data.creator}}).then(events => {
+      res.render('dashboard', { events: events, username: data.username });
+    });
+  }).catch(err => {
+    console.log(err);
+    res.redirect('/dashboard');
+  });
 });
 
 router.get('/logout', function (req, res) {
