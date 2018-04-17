@@ -9,12 +9,21 @@ const dataform = require('../models/database');
 const User = dataform.User;
 const Group = dataform.Group;
 const _Event = dataform._Event;
+const Sequelize = require('sequelize');
+
 const connectionString = (process.argv[2] === 'local') ? 'postgres://localhost:5432/coleelam' : process.env.DATABASE_URL;
 
-const pool = new Pool({
-  connectionString: connectionString,
-  ssl: (process.argv[2] === 'local') ? false : true,
+var sequelize = new Sequelize(connectionString, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: ((process.argv[2] === 'local')) ? false : true,
+  }
 });
+
+// const pool = new Pool({
+//   connectionString: connectionString,
+//   ssl: (process.argv[2] === 'local') ? false : true,
+// });
 
 var sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies.user_sid) {
@@ -112,5 +121,21 @@ router.get('/logout', function (req, res) {
         res.redirect('/login');
     }
 });
+
+router.get('/events', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    const user = req.session.user;
+    sequelize.query('select events.*, users.username from events left join users on events.creator = users.user_id where group_id is null',
+     { type : sequelize.QueryTypes.SELECT }).then(events => {
+       res.render('events', {events : events, username: user.username, moment: moment});
+     })
+    // _Event.findAll({where: {group_id: null }}).then(events => {
+    //   // console.log(events);
+    //   res.render('events', { events: events, username: user.username });
+    // });
+  } else {
+    res.redirect('/login');
+  }
+})
 
 module.exports = router;

@@ -8,21 +8,21 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
-        <link rel="stylesheet" href="/stylesheets/style.css">
-    <script type="text/javascript"
-     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
-    </script>
-    <script type="text/javascript"
-     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
-    </script>
-    <script type="text/javascript">
-      $('#datetimepicker').datetimepicker({
-        format: 'dd/MM/yyyy hh:mm:ss',
-        startDate: new Date(),
-        language: 'en'
-      });
-    </script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+       <link rel="stylesheet" href="/stylesheets/style.css">
+       <script type="text/javascript"
+       src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+       </script>
+       <script type="text/javascript"
+       src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+       </script>
+       <script type="text/javascript">
+        $('#datetimepicker').datetimepicker({
+          format: 'dd/MM/yyyy hh:mm:ss',
+          startDate: new Date(),
+          language: 'en'
+        });
+        </script>
     </head>
 
 
@@ -37,15 +37,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/"><i class="fa fa-coffee"></i> <span style="font-family: 'Raleway', sans-serif;">Eventem</span></a>
+            <a class="navbar-brand" href="/"><i class="fas fa-coffee"></i> <span style="font-family: 'Raleway', sans-serif;">Eventem</span></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li> <a href="/dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li> <a href="/events"><i class="fas fa-tasks"></i> Events </a></li>
+                <li> <a href="/dashboard" class="active"><i class="fas fa-desktop"></i> Dashboard</a></li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" role="button" data-toggle="dropdown"><i class="fa fa-user-circle"></i> <%= username %> <span class="caret"></span></a>
+                    <a class="dropdown-toggle" role="button" data-toggle="dropdown"><i class="far fa-user"></i> <%= username %> <span class="caret"></span></a>
                     <ul id="g-account-menu" class="dropdown-menu" role="menu">
-                        <li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+                        <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -59,13 +60,19 @@
 <!-- Main -->
 
 <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12" style="text-align:center;">
-    <strong><span class="fa fa-dashboard"></span> My Events</strong>
+    <strong><span class="fas fa-tasks"></span> My Events</strong>
     <hr>
+    <% if(Array.isArray(events) && events.length ) { %>
     <div class="list-group" style="text-align:left;">
       <% events.forEach(function(event) { %>
         <a href="/dashboard" class="list-group-item"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
       <% }) %>
     </div>
+    <% } else { %>
+    <div class="jumbotron">
+      You haven't created any events.
+    </div>
+    <% } %>
 </div><!-- /span-3 -->
 <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
     <!-- Right -->
