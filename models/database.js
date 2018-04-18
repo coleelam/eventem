@@ -151,6 +151,30 @@ var _Event = sequelize.define('events', {
   ],
   timestamps: false,
 });
+var User_Event = sequelize.define('user_events', {
+  user_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    references: {
+      model: User,
+      key: 'user_id',
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+    },
+  },
+  event_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    references: {
+      model: _Event,
+      key: 'event_id',
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+    },
+  },
+}, {
+  timestamps: false,
+});
 
 // sequelize.sync()
 //   .then(() => console.log('created tables if they didn\'t exist'))
@@ -160,4 +184,5 @@ module.exports = {
   User,
   Group,
   _Event,
+  User_Event,
 }

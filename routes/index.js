@@ -9,6 +9,7 @@ const dataform = require('../models/database');
 const User = dataform.User;
 const Group = dataform.Group;
 const _Event = dataform._Event;
+const User_Event = dataform.User_Event;
 const Sequelize = require('sequelize');
 
 const connectionString = (process.argv[2] === 'local') ? 'postgres://localhost:5432/coleelam' : process.env.DATABASE_URL;
@@ -79,8 +80,20 @@ router.get('/dashboard', function (req, res) {
   if (req.session.user && req.cookies.user_sid) {
     const user = req.session.user;
     _Event.findAll({where: {creator: req.session.user.user_id}}).then(events => {
-      // console.log(events);
-      res.render('dashboard', { events: events, username: user.username });
+      User_Event.findAll({where: {user_id: req.session.user.user_id}}).then(attendings => {
+        const attending_events = [];
+        const ae = [];
+        attendings.forEach(function(attend) {
+          attending_events.push((_Event.findOne({where: {event_id : attend.event_id}}).then(aevent => {
+              ae.push(aevent.dataValues);
+            })
+          ));
+        });
+        Promise.all(attending_events).then(() => {
+          res.render('dashboard', { events: events, username: user.username, attending_events: ae });
+        });
+      });
+      // res.render('dashboard', { events: events, username: user.username });
     });
   } else {
     res.redirect('/login');
@@ -104,8 +117,29 @@ router.post('/dashboard', function (req, res) {
     event_time: data.event_time,
     attendees: data.attendees,
   }).then(value => {
-    _Event.findAll({where: {creator: data.creator}}).then(events => {
-      res.render('dashboard', { events: events, username: data.username });
+    // console.log(value);
+    User_Event.create({
+      user_id: data.creator,
+      event_id: value.dataValues.event_id,
+    }).then(user_event => {
+      _Event.findAll({where: {creator: data.creator}}).then(events => {
+        User_Event.findAll({where: {user_id: data.creator}}).then(attendings => {
+          const attending_events = [];
+          const ae = [];
+          attendings.forEach(function(attend) {
+            attending_events.push((_Event.findOne({where: {event_id : attend.event_id}}).then(aevent => {
+                ae.push(aevent.dataValues);
+              })
+            ));
+          });
+          Promise.all(attending_events).then(() => {
+            res.render('dashboard', { events: events, username: data.username, attending_events: ae });
+          });
+        });
+      });
+    }).catch(error => {
+      console.log(error);
+      res.redirect('/dashboard');
     });
   }).catch(err => {
     console.log(err);
@@ -125,7 +159,7 @@ router.get('/logout', function (req, res) {
 router.get('/events', function (req, res) {
   if (req.session.user && req.cookies.user_sid) {
     const user = req.session.user;
-    sequelize.query('select events.*, users.username from events left join users on events.creator = users.user_id where group_id is null',
+    sequelize.query('select events.*, users.username from events left join users on events.creator = users.user_id where group_id is null order by events.event_time asc',
      { type : sequelize.QueryTypes.SELECT }).then(events => {
        res.render('events', {events : events, username: user.username, moment: moment});
      })
@@ -136,6 +170,81 @@ router.get('/events', function (req, res) {
   } else {
     res.redirect('/login');
   }
-})
+});
+
+router.get('/events/:event_id', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    // console.log(req.params.event_id);
+    _Event.findOne({where: {event_id : req.params.event_id}}).then(event_ => {
+      // console.log(event_.dataValues);
+      User.findOne({where: {user_id: event_.creator}}).then(user => {
+        const data = Object.assign({username: user.username, event_time_formatted: moment(event_.event_time).format('MMMM Do YYYY, h:mm a')}, event_.dataValues);
+        data.current_user = req.session.user.user_id;
+        res.json(data);
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/dashboard/removeuser/:event_id', function(req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    _Event.findOne({where: {event_id : req.params.event_id}}).then(event_ => {
+      const attendees = event_.dataValues.attendees;
+      const target = attendees.indexOf(req.session.user.user_id);
+      attendees.splice(target, 1);
+      event_.update(
+        {attendees: attendees},
+      ).then(value => {
+        User_Event.destroy({where : {user_id: req.session.user.user_id, event_id: req.params.event_id}}).then(() => {
+          res.redirect('/dashboard');
+        });
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/events/removeuser/:event_id', function(req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    _Event.findOne({where: {event_id : req.params.event_id}}).then(event_ => {
+      const attendees = event_.dataValues.attendees;
+      const target = attendees.indexOf(req.session.user.user_id);
+      attendees.splice(target, 1);
+      event_.update(
+        {attendees: attendees},
+      ).then(value => {
+        User_Event.destroy({where : {user_id: req.session.user.user_id, event_id: req.params.event_id}}).then(() => {
+          res.redirect('/events');
+        });
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/events/:event_id', function(req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    _Event.update(
+      {attendees: sequelize.fn('array_append', sequelize.col('attendees'), req.session.user.user_id)},
+      {where: {event_id: req.params.event_id}}
+    ).then(value => {
+      User_Event.create({user_id: req.session.user.user_id, event_id: req.params.event_id}).then(() => {
+        res.redirect('/events');
+      });
+    });
+    // _Event.findOne({where: {event_id : req.params.event_id}}).then(event_ => {
+    //   event_.update({attendees: event_.attendees.push(req.session.user.user_id)}).then((value) => {
+    //     console.log(value);
+    //     res.redirect('/events');
+    //   });
+    // });
+  } else {
+    res.redirect('/login');
+  }
+});
 
 module.exports = router;

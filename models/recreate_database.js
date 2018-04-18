@@ -151,6 +151,30 @@ var _Event = sequelize.define('events', {
   ],
   timestamps: false,
 });
+var User_Event = sequelize.define('user_events', {
+  user_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    references: {
+      model: User,
+      key: 'user_id',
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+    },
+  },
+  event_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    references: {
+      model: _Event,
+      key: 'event_id',
+      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+    },
+  },
+}, {
+  timestamps: false,
+});
 
 User.sync({force: true})
   .then(() => {
@@ -161,9 +185,14 @@ User.sync({force: true})
         _Event.sync({force: true})
           .then(() => {
             console.log('\'events\' table successfully recreated.');
-            sequelize.close()
-              .then(() => {console.log('ending session')})
-              .catch(err => {console.log('could not end session: ' + err)});
+            User_Event.sync({force: true})
+              .then(() => {
+                console.log('\'user_events\' table successfully recreated.');
+                sequelize.close()
+                  .then(() => {console.log('ending session')})
+                  .catch(err => {console.log('could not end session: ' + err)});
+              })
+              .catch(err => console.log('cannot recreate table user_events'));
           })
           .catch(err => console.log('cannot recreate table events ' + err));
       })

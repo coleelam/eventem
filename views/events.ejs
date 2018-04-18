@@ -72,7 +72,7 @@
       </thead>
       <tbody>
         <% events.forEach(function(event) { %>
-          <tr>
+          <tr data-id="<%= event.event_id %>" data-target="#eventModal" data-toggle="modal" class="viewevent">
             <td class="filterable-cell"><%= event.event_name %></td>
             <td class="filterable-cell"><%= moment(event.event_time).format('MMMM Do YYYY, h:mm a') %></td>
             <td class="filterable-cell"><%= event.username %></td>
@@ -99,6 +99,51 @@
         <!-- <div class="col-sm-3"></div> -->
       </div>
     <% } %>
+
+  <div id="eventModal" class="modal fade" role="dialog" aria-labelledby="eventModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+          <h3 id="eventName"></h3>
+        </div>
+        <div id="eventDetails" class="modal-body"></div>
+        <div id="eventTime" class="modal-body"></div>
+        <div id="eventAttendees" class="modal-body"></div>
+        <div class="modal-footer">
+          <form id="updateEventForm" action="" method="post">
+            <button class="btn" id="targetButton" type="submit"></button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div><!-- /span-3 -->
+
+<script type="text/javascript">
+  $('tr.viewevent').click(function (e) {
+    e.preventDefault();
+    var tr = $(this).closest('tr'),
+        modal = $('#eventModal');
+        eventid = tr.data('id');
+    $.getJSON('/events/' + eventid, function(data) {
+      if (data.attendees.includes(data.current_user)) {
+        modal.find('#updateEventForm').attr("action", "/events/removeuser/"+eventid);
+        modal.find('#targetButton').addClass("btn-danger")
+        modal.find('#targetButton').html('Leave');
+      } else {
+        modal.find('#updateEventForm').attr("action", "/events/"+eventid);
+        modal.find('#targetButton').addClass("btn-primary");
+        modal.find('#targetButton').html('Attend');
+      }
+      modal.find('#eventName').html(''+data.event_name+'');
+      modal.find('#eventDetails').html('About this event: '+data.description+'');
+      modal.find('#eventTime').html('This event is happening on: '+data.event_time_formatted+'');
+      modal.find('#eventAttendees').html('There are '+data.attendees.length+' people attending this event that was created by '+data.username+'.');
+      modal.modal('show');
+    });
+  });
+</script>
 
 </html>
