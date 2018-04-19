@@ -65,7 +65,7 @@
     <% if(Array.isArray(events) && events.length ) { %>
     <div class="list-group" style="text-align:left;">
       <% events.forEach(function(event) { %>
-        <a href="/dashboard" class="list-group-item"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
+        <a data-id="<%= event.event_id %>" data-target='#eventModal' data-toggle="modal" class="list-group-item viewevent"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
       <% }) %>
     </div>
     <% } else { %>
@@ -118,7 +118,7 @@
     <% if(Array.isArray(attending_events) && attending_events.length ) { %>
     <div class="list-group" style="text-align:left;">
       <% attending_events.forEach(function(event) { %>
-        <a href="/dashboard" class="list-group-item"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
+        <a data-id="<%= event.event_id %>" data-target='#eventModal' data-toggle="modal" class="list-group-item viewevent"><i class="fa fa-calendar"></i> <%= event.event_name %></a>
       <% }) %>
     </div>
     <% } else { %>
@@ -129,7 +129,7 @@
 </div><!-- /span-3 -->
 
 <div id="eventModal" class="modal fade" role="dialog" aria-labelledby="eventModal" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="text-align:center;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -138,6 +138,11 @@
       <div id="eventDetails" class="modal-body"></div>
       <div id="eventTime" class="modal-body"></div>
       <div id="eventAttendees" class="modal-body"></div>
+      <div id="deleteEvent"class="">
+        <form id="deleteEventForm" action="" method="post">
+          <button class="btn" id="deleteButton" type="submit">Delete Event</button>
+        </form>
+      </div>
       <div class="modal-footer">
         <form id="updateEventForm" action="" method="post">
           <button class="btn" id="targetButton" type="submit"></button>
@@ -150,18 +155,27 @@
 </div><!-- /span-3 -->
 
 <script type="text/javascript">
-$('tr.viewevent').click(function (e) {
+$('a.viewevent').click(function (e) {
   e.preventDefault();
-  var tr = $(this).closest('tr'),
+  var a = $(this).closest('a'),
       modal = $('#eventModal');
-      eventid = tr.data('id');
+      eventid = a.data('id');
   $.getJSON('/events/' + eventid, function(data) {
+    modal.find('#deleteButton').hide();
+    if (data.current_user == data.creator) {
+      modal.find('#deleteButton').show();
+      modal.find('#deleteButton').addClass('btn-danger');
+      modal.find('#deleteEventForm').attr("action", "/dashboard/deleteevent/"+eventid);
+    }
+    console.log(data);
     if (data.attendees.includes(data.current_user)) {
       modal.find('#updateEventForm').attr("action", "/dashboard/removeuser/"+eventid);
+      modal.find('#targetButton').removeClass("btn-primary");
       modal.find('#targetButton').addClass("btn-danger")
       modal.find('#targetButton').html('Leave');
     } else {
-      modal.find('#updateEventForm').attr("action", "/events/"+eventid);
+      modal.find('#updateEventForm').attr("action", "/dashboard/"+eventid);
+      modal.find('#targetButton').removeClass("btn-danger")
       modal.find('#targetButton').addClass("btn-primary");
       modal.find('#targetButton').html('Attend');
     }

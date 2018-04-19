@@ -93,7 +93,6 @@ router.get('/dashboard', function (req, res) {
           res.render('dashboard', { events: events, username: user.username, attending_events: ae });
         });
       });
-      // res.render('dashboard', { events: events, username: user.username });
     });
   } else {
     res.redirect('/login');
@@ -117,7 +116,6 @@ router.post('/dashboard', function (req, res) {
     event_time: data.event_time,
     attendees: data.attendees,
   }).then(value => {
-    // console.log(value);
     User_Event.create({
       user_id: data.creator,
       event_id: value.dataValues.event_id,
@@ -161,12 +159,8 @@ router.get('/events', function (req, res) {
     const user = req.session.user;
     sequelize.query('select events.*, users.username from events left join users on events.creator = users.user_id where group_id is null order by events.event_time asc',
      { type : sequelize.QueryTypes.SELECT }).then(events => {
-       res.render('events', {events : events, username: user.username, moment: moment});
-     })
-    // _Event.findAll({where: {group_id: null }}).then(events => {
-    //   // console.log(events);
-    //   res.render('events', { events: events, username: user.username });
-    // });
+       res.render('events', {events : events, username: user.username, moment: moment})
+     });
   } else {
     res.redirect('/login');
   }
@@ -183,6 +177,19 @@ router.get('/events/:event_id', function (req, res) {
         res.json(data);
       });
     });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/dashboard/deleteevent/:event_id', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    User_Event.destroy({where : {event_id: req.params.event_id}}).then(() => {
+      _Event.destroy({where: {event_id: req.params.event_id}}).then(() => {
+        res.redirect('/dashboard');
+      });
+    });
+
   } else {
     res.redirect('/login');
   }
@@ -219,6 +226,21 @@ router.post('/events/removeuser/:event_id', function(req, res) {
         User_Event.destroy({where : {user_id: req.session.user.user_id, event_id: req.params.event_id}}).then(() => {
           res.redirect('/events');
         });
+      });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/dashboard/:event_id', function(req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    _Event.update(
+      {attendees: sequelize.fn('array_append', sequelize.col('attendees'), req.session.user.user_id)},
+      {where: {event_id: req.params.event_id}}
+    ).then(value => {
+      User_Event.create({user_id: req.session.user.user_id, event_id: req.params.event_id}).then(() => {
+        res.redirect('/dashboard');
       });
     });
   } else {

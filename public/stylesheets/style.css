@@ -49,6 +49,11 @@ input:focus, textarea:focus {
     -webkit-border-radius: 5px;
     }
 
+.modal-open {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
     /* body, html {
         height: 100%;
         scroll-behavior: smooth;
