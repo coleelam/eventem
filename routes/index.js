@@ -107,7 +107,8 @@ router.post('/dashboard', function (req, res) {
     event_time: moment(req.body.mdy + ' ' + req.body.hm),
     attendees: [req.session.user.user_id],
     username: req.session.user.username,
-  }
+    event_location: req.body.event_location,
+  };
   const username = req.session.user.username;
   _Event.create({
     event_name: data.event_name,
@@ -115,6 +116,7 @@ router.post('/dashboard', function (req, res) {
     description: data.description,
     event_time: data.event_time,
     attendees: data.attendees,
+    event_location: data.event_location,
   }).then(value => {
     User_Event.create({
       user_id: data.creator,

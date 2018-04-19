@@ -65,6 +65,7 @@
       <thead>
         <tr>
           <th>Event Name</th>
+          <th>Event Location</th>
           <th>Event Time</th>
           <th>Event Creator</th>
           <th>Attendees</th>
@@ -74,6 +75,7 @@
         <% events.forEach(function(event) { %>
           <tr data-id="<%= event.event_id %>" data-target="#eventModal" data-toggle="modal" class="viewevent">
             <td class="filterable-cell"><%= event.event_name %></td>
+            <td class="filterable-cell"><%= event.event_location %></td>
             <td class="filterable-cell"><%= moment(event.event_time).format('MMMM Do YYYY, h:mm a') %></td>
             <td class="filterable-cell"><%= event.username %></td>
             <td class="filterable-cell"><%= event.attendees.length %></td>
@@ -108,6 +110,7 @@
           <h3 id="eventName"></h3>
         </div>
         <div id="eventDetails" class="modal-body"></div>
+        <div id="eventLocation" class="modal-body"></div>
         <div id="eventTime" class="modal-body"></div>
         <div id="eventAttendees" class="modal-body"></div>
         <div class="modal-footer">
@@ -139,6 +142,7 @@
       }
       modal.find('#eventName').html(''+data.event_name+'');
       modal.find('#eventDetails').html('About this event: '+data.description+'');
+      modal.find('#eventLocation').html('This event is happening at: '+data.event_location+'');
       modal.find('#eventTime').html('This event is happening on: '+data.event_time_formatted+'');
       modal.find('#eventAttendees').html('There are '+data.attendees.length+' people attending this event that was created by '+data.username+'.');
       modal.modal('show');

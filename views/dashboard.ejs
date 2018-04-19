@@ -86,23 +86,29 @@
           <div>
             Event Name
           </div>
-          <input type="text" name="event_name" placeholder="Event Name:">
+          <input type="text" name="event_name" required placeholder="Event Name:">
+        </div>
+        <div>
+          <div>
+            Event Location
+          </div>
+          <input type="text" name="event_location" required placeholder="Event Location:">
         </div>
         <div>
           <div>
             Description
           </div>
-          <input type="text" name="description" placeholder="Description:">
+          <input type="text" name="description" required placeholder="Description:">
         </div>
         <div>
           <div>
             Event Time
           </div>
           <div style="width:50%">
-            <input type="date" name="mdy"></input>
+            <input type="date" required name="mdy"></input>
           </div>
           <div style="width:50%">
-            <input type="time" name="hm"></input>
+            <input type="time" required name="hm"></input>
           </div>
         </div>
         <br>
@@ -136,6 +142,7 @@
         <h3 id="eventName"></h3>
       </div>
       <div id="eventDetails" class="modal-body"></div>
+      <div id="eventLocation" class="modal-body"></div>
       <div id="eventTime" class="modal-body"></div>
       <div id="eventAttendees" class="modal-body"></div>
       <div id="deleteEvent"class="">
@@ -181,6 +188,7 @@ $('a.viewevent').click(function (e) {
     }
     modal.find('#eventName').html(''+data.event_name+'');
     modal.find('#eventDetails').html('About this event: '+data.description+'');
+    modal.find('#eventLocation').html('This event is happening at: '+data.event_location+'');
     modal.find('#eventTime').html('This event is happening on: '+data.event_time_formatted+'');
     modal.find('#eventAttendees').html('There are '+data.attendees.length+' people attending this event that was created by '+data.username+'.');
     modal.modal('show');

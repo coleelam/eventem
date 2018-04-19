@@ -104,6 +104,10 @@ var _Event = sequelize.define('events', {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  event_location: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
   creator: {
     type: Sequelize.INTEGER,
     allowNull: false,
