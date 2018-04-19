@@ -10,9 +10,7 @@
 
 # Description
 
-Eventem is an app that is designed to bring all event registration to a single app and allow people to chat that are wanting to go to
-any event! The app will have events that you can sign up for as a user and also have a chat for each specific event.
-
+Eventem is an app that is designed to bring all event registration to a single app and allow people to sign up for those events with event management functionality.
 
 # Dependencies
 
