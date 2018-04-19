@@ -21,7 +21,10 @@ any event! The app will have events that you can sign up for as a user and also 
 * EJS - Embedded JavaScript in HTML
 * Angular JS - HTTP Requests
 * Heroku - Cloud platform for web application deployment
-* Socket.IO - Real-time engine for bidirectional events
+* PostgreSQL - Database for users/user auth/events/etc.
+* Sequelize - Node ORM for Databases (connecting to PostgreSQL Database)
+* cookie-parser - manage user sessions when logged in
+* bcrypt - blowfish encryption algorithm for encrypting user data to ensure security
 
 # Development
 
