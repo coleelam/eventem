@@ -50,6 +50,12 @@ var User = sequelize.define('users', {
     beforeCreate: (user) => {
       const salt = bcrypt.genSaltSync();
       user.pass_hash = bcrypt.hashSync(user.pass_hash, salt);
+    },
+    beforeUpdate: (user) => {
+      if (user.changed().includes('pass_hash')) {
+        const salt = bcrypt.genSaltSync();
+        user.pass_hash = bcrypt.hashSync(user.pass_hash, salt);
+      }
     }
   },
   timestamps: false,

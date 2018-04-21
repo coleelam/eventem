@@ -76,6 +76,45 @@ router.post('/login', function (req, res) {
   });
 });
 
+router.get('/modify', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    const user = { username: req.session.user.username, email: req.session.user.email };
+    res.render('modify', { user: user});
+  } else {
+    res.redirect('/login');
+  }
+});
+
+router.post('/modify', function (req, res) {
+  if (req.session.user && req.cookies.user_sid) {
+    const new_info = { username: req.body.username, email: req.body.email };
+    User.findOne({where: {user_id: req.session.user.user_id}}).then(function (user) {
+        if (req.body.pass_hash) {
+          user.update({username: new_info.username, email: new_info.email, pass_hash: req.body.pass_hash}).then(value => {
+            console.log(value);
+            req.session.user.username = value.dataValues.username;
+            req.session.user.email = value.dataValues.email;
+            req.session.user.pass_hash = value.dataValues.pass_hash;
+            res.redirect('/dashboard');
+          }).catch(err => {
+            console.error(err);
+            res.redirect('/dashboard');
+          });
+        } else {
+          user.update({username: new_info.username, email: new_info.email}).then(value => {
+            console.log(value);
+            req.session.user.username = value.dataValues.username;
+            req.session.user.email = value.dataValues.email;
+            res.redirect('/dashboard');
+          }).catch(err => {
+            console.error(err);
+            res.redirect('/dashboard');
+          });;
+        }
+    });
+  }
+});
+
 router.get('/dashboard', function (req, res) {
   if (req.session.user && req.cookies.user_sid) {
     const user = req.session.user;
@@ -260,12 +299,6 @@ router.post('/events/:event_id', function(req, res) {
         res.redirect('/events');
       });
     });
-    // _Event.findOne({where: {event_id : req.params.event_id}}).then(event_ => {
-    //   event_.update({attendees: event_.attendees.push(req.session.user.user_id)}).then((value) => {
-    //     console.log(value);
-    //     res.redirect('/events');
-    //   });
-    // });
   } else {
     res.redirect('/login');
   }
